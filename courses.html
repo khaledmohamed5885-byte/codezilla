@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codzilla - Courses</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        :root {
+            --bg: #121921;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --accent: #d946ef; /* نفس لون الـ Glow اللي كان في اللمبة */
+            --border: rgba(255, 255, 255, 0.1);
+        }
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+         .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ستايل خاص بكروت الكورسات */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+.logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .course-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .course-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .course-thumbnail i {
+            font-size: 3rem;
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .course-info {
+            padding: 1.5rem;
+        }
+
+        .course-info h3 { margin: 0 0 10px 0; font-size: 1.2rem; }
+        .course-info p { color: #aaa; font-size: 0.9rem; line-height: 1.4; }
+
+        /* زر الرفع للمالك فقط */
+        .upload-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        /* Modal الرفع (مخفي افتراضياً) */
+        .modal {
+            display: none; 
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">CODZILLA 💡</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+            <li><a href="courses.html" class="active"><i class="fas fa-graduation-cap"></i> Courses</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Educational Courses</h1>
+            <button class="upload-btn admin-only" onclick="openModal()">
+                <i class="fas fa-plus"></i> Upload Course
+            </button>
+        </header>
+
+        <div class="courses-grid" id="coursesContainer">
+            <div class="course-card" onclick="playVideo('intro-to-js')">
+                <div class="course-thumbnail">
+                    <i class="fab fa-js-square"></i>
+                </div>
+                <div class="course-info">
+                    <h3>JavaScript Mastery</h3>
+                    <p>Learn the fundamentals of JS to build interactive web apps.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+   <div id="uploadModal" class="modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+    <div class="card" style="background: #111; padding: 2rem; border-radius: 15px; border: 1px solid var(--accent); width: 400px; color: white;">
+        <h2>Upload New Course</h2>
+        <input type="text" placeholder="Course Title" style="width:100%; margin: 10px 0; padding:12px; background:#1a1a1a; color:white; border:1px solid #333; border-radius:8px;">
+        <textarea placeholder="Course Description" style="width:100%; margin: 10px 0; padding:12px; background:#1a1a1a; color:white; border:1px solid #333; border-radius:8px; height:80px;"></textarea>
+        <label style="display:block; margin: 10px 0; color: #aaa;">Course Thumbnail:</label>
+        <input type="file" accept="image/*" id="courseImg" style="margin-bottom: 20px;">
+        
+        <div style="display:flex; gap:10px;">
+            <button class="upload-btn" onclick="uploadCourse()" style="flex:1;">Submit Course</button>
+            <button onclick="closeModal()" style="background:none; color:white; border:none; cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <script src="../javaa/auth.js"></script>
+    <script>
+// 1. قراءة الكورسات من الخزنة
+let courses = JSON.parse(localStorage.getItem('codzilla_courses')) || [];
+
+const coursesContainer = document.getElementById('coursesContainer');
+
+// 2. وظيفة عرض الكورسات
+function renderCourses() {
+    coursesContainer.innerHTML = '';
+    courses.forEach((course, index) => {
+        const card = document.createElement('div');
+        card.className = 'course-card';
+        card.onclick = () => playVideo(course.videoLink);
+        
+        const displayImg = course.image ? `<img src="${course.image}" class="course-thumbnail" style="object-fit:cover;">` : 
+            `<div class="course-thumbnail"><i class="fas fa-play-circle fa-3x"></i></div>`;
+            
+        card.innerHTML = `
+            ${displayImg}
+            <div class="course-info">
+                <h3>${course.title}</h3>
+                <p>${course.desc}</p>
+                <div class="admin-only" style="margin-top:10px;">
+                    <button onclick="event.stopPropagation(); deleteCourse(${index})" style="background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `;
+        coursesContainer.appendChild(card);
+    });
+    if (typeof checkPermissions === "function") checkPermissions();
+}
+
+// 3. وظيفة إضافة كورس جديد
+function uploadCourse() {
+    const title = document.querySelector('#uploadModal input[placeholder="Course Title"]').value;
+    const desc = document.querySelector('#uploadModal textarea').value;
+    const videoLink = prompt("ادخل رابط الفيديو (أو اسم ملف الفيديو):");
+    const imageInput = document.querySelector('#uploadModal input[type="file"]').files[0];
+
+    if(title && desc && imageInput && videoLink) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const newCourse = {
+                title: title,
+                desc: desc,
+                videoLink: videoLink,
+                image: e.target.result
+            };
+            courses.push(newCourse);
+            localStorage.setItem('codzilla_courses', JSON.stringify(courses));
+            renderCourses();
+            closeModal();
+        };
+        reader.readAsDataURL(imageInput);
+    } else {
+        alert("تأكد من إدخال جميع البيانات!");
+    }
+}
+
+// 4. وظيفة تشغيل الفيديو
+function playVideo(link) {
+    if(link.includes('youtube.com')) {
+        window.open(link, '_blank'); // يفتح يوتيوب في صفحة جديدة
+    } else {
+        alert("جاري تشغيل الفيديو من الرابط: " + link);
+        // هنا ممكن نطورها ونفتح Video Player داخلي في المستقبل
+    }
+}
+
+// 5. وظيفة الحذف
+function deleteCourse(index) {
+    courses.splice(index, 1);
+    localStorage.setItem('codzilla_courses', JSON.stringify(courses));
+    renderCourses();
+}
+
+// ربط الزرار في الـ Modal بالوظيفة
+document.querySelector('#uploadModal .upload-btn').onclick = uploadCourse;
+// وظيفة فتح النافذة
+const uploadBtn = document.querySelector('.upload-btn'); // الزرار اللي في الصورة
+const modal = document.getElementById('uploadModal');
+
+if(uploadBtn) {
+    uploadBtn.onclick = function() {
+        modal.style.display = 'flex';
+    };
+}
+
+// وظيفة إغلاق النافذة
+function closeModal() {
+    modal.style.display = 'none';
+}
+    </script>
+    
+</body>
+</html>

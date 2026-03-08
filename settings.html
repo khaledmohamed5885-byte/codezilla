@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codzilla - Settings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg: #121921;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --accent: #d946ef; /* نفس لون الـ Glow اللي كان في اللمبة */
+            --border: rgba(255, 255, 255, 0.1);
+        }
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+         .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .settings-container {
+            max-width: 800px;
+            margin-top: 2rem;
+        }
+        .settings-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .settings-section h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .input-group {
+            margin-top: 1.5rem;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+        .input-group input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: var(--accent);
+        }
+        .save-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .save-btn:hover {
+            box-shadow: 0 0 15px var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+       <div class="logo">CODZILLA 💡</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+            <li><a href="courses.html"><i class="fas fa-graduation-cap"></i> Courses</a></li>
+            <li><a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <h1>Settings</h1>
+        
+        <div class="settings-container">
+            <div class="settings-section">
+                <h2><i class="fas fa-user-circle"></i> Profile Settings</h2>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" value="Codzilla_Admin">
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="admin@codzilla.com">
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2><i class="fas fa-paint-brush"></i> Appearance</h2>
+                <div class="input-group">
+                    <label>Accent Color (Glow)</label>
+                    <input type="color" value="#d946ef" style="height: 50px; cursor: pointer;">
+                </div>
+            </div>
+
+            <button class="save-btn">Save All Changes</button>
+        </div>
+    </main>
+
+    <script src="../javaa/auth.js"></script>
+</body>
+</html>

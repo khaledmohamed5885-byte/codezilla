@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codzilla - Projects</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg: #121921;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --accent: #d946ef; /* نفس لون الـ Glow اللي كان في اللمبة */
+            --border: rgba(255, 255, 255, 0.1);
+        }
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+         .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 2rem;
+        }
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .project-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+        .project-img {
+            width: 100%;
+            height: 200px;
+            background: #1a1a1a;
+            object-fit: cover;
+        }
+        .project-info {
+            padding: 1.5rem;
+        }
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-delete { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">CODZILLA 💡</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a href="projects.html" class="active"><i class="fas fa-project-diagram"></i> Projects</a></li>
+            <li><a href="courses.html"><i class="fas fa-graduation-cap"></i> Courses</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Our Projects</h1>
+            <button class="upload-btn admin-only" id="addProjectBtn">
+                <i class="fas fa-plus"></i> Add New Project
+            </button>
+        </header>
+
+        <div class="projects-grid" id="projectsContainer">
+            <div class="project-card">
+                <div class="project-img" style="display: flex; align-items: center; justify-content: center; color: var(--accent);">
+                    <i class="fas fa-image fa-3x"></i>
+                </div>
+                <div class="project-info">
+                    <h3>Project Alpha</h3>
+                    <p>Description of the amazing project built by Codzilla team.</p>
+                    <div class="admin-controls admin-only">
+                        <button class="btn-delete"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="projectModal" class="modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+        <div class="card" style="background: var(--bg); padding: 2rem; border-radius: 15px; border: 1px solid var(--accent); width: 400px;">
+            <h2>Upload Project</h2>
+            <input type="text" placeholder="Project Name" style="width:100%; margin: 10px 0; padding:10px; background:#1a1a1a; color:white; border:1px solid var(--border);">
+            <textarea placeholder="Info" style="width:100%; margin: 10px 0; padding:10px; background:#1a1a1a; color:white; border:1px solid var(--border);"></textarea>
+            <input type="file" accept="image/*" style="margin: 10px 0;">
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="upload-btn">Submit</button>
+                <button onclick="document.getElementById('projectModal').style.display='none'" style="background:none; color:white; border:none; cursor:pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../javaa/auth.js"></script>
+    <script>
+        // تفعيل زر الرفع
+        document.getElementById('addProjectBtn').onclick = () => {
+            document.getElementById('projectModal').style.display = 'flex';
+        };
+
+        // التأكد من الصلاحيات عند التحميل
+        window.onload = () => {
+            if (typeof checkPermissions === "function") {
+                checkPermissions();
+            }
+        };
+        // 1. قراءة المشاريع من الخزنة عند التحميل، لو مفيش بنحط مصفوفة فاضية
+let projects = JSON.parse(localStorage.getItem('codzilla_projects')) || [
+    { id: 1, name: "Project Alpha", info: "Description of the amazing project." }
+];
+
+const projectsContainer = document.getElementById('projectsContainer');
+
+function renderProjects() {
+    projectsContainer.innerHTML = '';
+    projects.forEach(proj => {
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.innerHTML = `
+            <div class="project-img" style="display: flex; align-items: center; justify-content: center; color: var(--accent);">
+                <i class="fas fa-image fa-3x"></i>
+            </div>
+            <div class="project-info">
+                <h3>${proj.name}</h3>
+                <p>${proj.info}</p>
+                <div class="admin-controls admin-only">
+                    <button class="btn-delete" onclick="deleteProject(${proj.id})">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `;
+        projectsContainer.appendChild(card);
+    });
+    if (typeof checkPermissions === "function") checkPermissions();
+}
+
+// 2. وظيفة الحفظ في الخزنة
+function saveToLocal() {
+    localStorage.setItem('codzilla_projects', JSON.stringify(projects));
+}
+
+function addNewProject() {
+    const nameInput = document.querySelector('#projectModal input[type="text"]').value;
+    const infoInput = document.querySelector('#projectModal textarea').value;
+
+    if(nameInput && infoInput) {
+        const newProj = { id: Date.now(), name: nameInput, info: infoInput };
+        projects.push(newProj);
+        
+        saveToLocal(); // حفظ التغيير
+        renderProjects();
+        
+        document.getElementById('projectModal').style.display = 'none';
+        document.querySelector('#projectModal input[type="text"]').value = '';
+        document.querySelector('#projectModal textarea').value = '';
+    }
+}
+
+function deleteProject(id) {
+    projects = projects.filter(p => p.id !== id);
+    saveToLocal(); // حفظ التغيير بعد الحذف
+    renderProjects();
+}
+
+document.querySelector('#projectModal .upload-btn').onclick = addNewProject;
+window.onload = renderProjects;
+    </script>
+    
+</body>
+</html>
